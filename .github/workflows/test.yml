@@ -1,0 +1,34 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+      - release-v*
+  pull_request: {}
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 12.x
+      - name: Install yarn
+        run: npm install -g yarn
+
+      - uses: c-hive/gha-yarn-cache@v1
+
+      - name: Install JS dependencies
+        run: yarn
+#      - run: yarn lint:sol
+      - run: yarn test
+        env:
+          FORCE_COLOR: 1
+          ENABLE_GAS_REPORT: true
+      - run: yarn test:inheritance
+#      - name: Print gas report
+#        run: cat gas-report.txt
+
